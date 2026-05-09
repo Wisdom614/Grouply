@@ -23,10 +23,16 @@ export async function GET() {
       orderBy: { createdAt: "desc" },
     });
     
-    return Response.json(groups);
+    return new Response(JSON.stringify(groups), {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+    });
   } catch (error) {
     console.error("API Error:", error);
-    return Response.json({ error: "Failed to fetch groups" }, { status: 500 });
+    return new Response(JSON.stringify({ error: "Failed to fetch groups", details: error.message }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" },
+    });
   }
 }
 
@@ -34,23 +40,6 @@ export async function POST(request) {
   try {
     const body = await request.json();
     const prisma = getPrisma();
-    
-    // Find or create user by email
-    let user = await prisma.user.findUnique({
-      where: { email: body.authorEmail },
-    });
-    
-    if (!user) {
-      // Create new user
-      user = await prisma.user.create({
-        data: {
-          email: body.authorEmail,
-          name: body.authorName,
-        },
-      });
-    }
-    
-    // Create the group with the user's ID
     const group = await prisma.group.create({
       data: {
         name: body.name,
@@ -60,13 +49,19 @@ export async function POST(request) {
         tags: body.tags || [],
         memberCount: body.memberCount || 0,
         imageUrl: body.imageUrl,
-        authorId: user.id,
+        authorId: body.authorId || "temp-user",
       },
     });
     
-    return Response.json(group, { status: 201 });
+    return new Response(JSON.stringify(group), {
+      status: 201,
+      headers: { "Content-Type": "application/json" },
+    });
   } catch (error) {
     console.error("POST Error:", error);
-    return Response.json({ error: "Failed to create group", details: error.message }, { status: 500 });
+    return new Response(JSON.stringify({ error: "Failed to create group" }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" },
+    });
   }
 }
