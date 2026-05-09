@@ -10,6 +10,7 @@ interface Group {
   name: string;
   description: string;
   platform: string;
+  platformUrl: string;
   tags: string[];
   memberCount: number;
   imageUrl: string | null;
@@ -49,6 +50,14 @@ export default function Home() {
     group.name.toLowerCase().includes(search.toLowerCase()) ||
     group.tags.some((tag) => tag.toLowerCase().includes(search.toLowerCase()))
   );
+
+  const handleJoin = (platformUrl: string) => {
+    if (platformUrl) {
+      window.open(platformUrl, '_blank');
+    } else {
+      console.warn("No platform URL provided");
+    }
+  };
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-950 dark:to-gray-900">
@@ -100,7 +109,10 @@ export default function Home() {
             <p className="text-gray-500 text-lg mb-4">
               {search ? `No communities found for "${search}" yet.` : "No communities added yet."}
             </p>
-            <Button className="rounded-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700">
+            <Button 
+              className="rounded-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
+              onClick={() => window.location.href = '/add-group'}
+            >
               Be the first to add one →
             </Button>
           </div>
@@ -143,7 +155,11 @@ export default function Home() {
                         <Users className="w-3 h-3" />
                         {group.memberCount.toLocaleString()} members
                       </div>
-                      <Button size="sm" className="rounded-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700">
+                      <Button 
+                        size="sm" 
+                        className="rounded-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
+                        onClick={() => handleJoin(group.platformUrl)}
+                      >
                         Join →
                       </Button>
                     </div>
