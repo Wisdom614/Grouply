@@ -1,3 +1,8 @@
 {
-  "framework": "nextjs"
+  "framework": "nextjs",
+  "build": {
+    "env": {
+      "DATABASE_URL": "postgresql://neondb_owner:npg_XpDW23lsmtfC@ep-billowing-silence-aqtnliav.c-8.us-east-1.aws.neon.tech/neondb?sslmode=verify-full"
+    }
+  }
 }
